@@ -1,0 +1,102 @@
+
+Explicacion del codigo para entender mejor que hace cada cosa
+
+ya que me conozco y esto lo hare dias antes y el mero dia no recordare que hice
+
+
+
+----------------------------------------
+
+# Definir la matriz de transición
+matriz_transicion = np.array([
+    [0.60, 0.30, 0.10],
+    [0.75, 0.15, 0.10],
+    [0.89, 0.01, 0.10]
+])
+
+# Definir los tiempos promedio en minutos
+tiempos = np.array([12, 20, 31])
+
+
+# Definir la matriz de transición
+matriz_transicion: Matriz que define las probabilidades de transición entre los estados. Cada fila representa el estado actual y cada columna representa el estado siguiente. Por ejemplo, la primera fila [0.60, 0.30, 0.10] significa que desde el estado "Fácil" hay un 60% de probabilidad de quedarse en "Fácil", un 30% de pasar a "Complicada" y un 10% de pasar a "Muy Compleja".
+
+# Definir los tiempos promedio en minutos
+tiempos: Array que contiene el tiempo promedio en minutos que toma resolver cada tipo de corrección (12 minutos para "Fácil", 20 minutos para "Complicada" y 31 minutos para "Muy Compleja").
+
+-------------------------------------------------------------------------
+# Función para realizar una transición según la matriz de transición
+def siguiente_estado(estado_actual):
+    return np.random.choice([0, 1, 2], p=matriz_transicion[estado_actual])
+
+
+
+#siguiente_estado
+Función que determina el próximo estado basado en el estado actual y las probabilidades definidas en la matriz de transición. Utiliza np.random.choice para elegir el próximo estado según las probabilidades correspondientes.
+
+-------------------------------------------------------------------------------
+
+# Simular el proceso
+def simular_proceso(estado_inicial, max_iteraciones=1000):
+    estado = estado_inicial
+    tiempo_total_minutos = 0
+    iteraciones = 0
+    conteo_estados = np.zeros(3)
+    
+    while estado != -1 and iteraciones < max_iteraciones:
+        tiempo_total_minutos += tiempos[estado]
+        conteo_estados[estado] += 1
+        estado = siguiente_estado(estado)
+        iteraciones += 1
+    
+    tiempo_total_horas = tiempo_total_minutos / 60
+    return tiempo_total_horas, conteo_estados, iteraciones
+
+# Inicializar con el estado "Fácil" (0)
+estado_inicial = 0
+tiempo_total_horas, conteo_estados, iteraciones = simular_proceso(estado_inicial)
+
+
+
+simular_proceso: Función que simula el proceso de corrección comenzando desde un estado inicial (estado_inicial).
+estado: Variable que guarda el estado actual.
+tiempo_total_minutos: Acumula el tiempo total en minutos.
+iteraciones: Cuenta las iteraciones realizadas.
+conteo_estados: Array que cuenta cuántas veces se visitó cada estado.
+En el bucle while, se actualiza el tiempo total, se incrementa el conteo del estado actual y se determina el próximo estado hasta que se alcanzan el máximo de iteraciones.
+Convierte el tiempo total de minutos a horas y retorna los resultados.
+estado_inicial: Variable que inicializa el estado en "Fácil" (0).
+
+------------------------------------------------------------------------------------
+
+
+def simular_proceso_con_tiempo(estado_inicial, max_iteraciones=1000):
+    estado = estado_inicial
+    tiempo_total_minutos = 0
+    lista_tiempos_minutos = []
+    iteraciones = 0
+    
+    while estado != -1 and iteraciones < max_iteraciones:
+        tiempo_total_minutos += tiempos[estado]
+        lista_tiempos_minutos.append(tiempo_total_minutos)
+        estado = siguiente_estado(estado)
+        iteraciones += 1
+    
+    lista_tiempos_horas = [t / 60 for t in lista_tiempos_minutos]
+    return tiempo_total_minutos / 60, lista_tiempos_horas, iteraciones
+
+tiempo_total_horas, lista_tiempos_horas, iteraciones = simular_proceso_con_tiempo(estado_inicial)
+
+
+
+simular_proceso_con_tiempo: Similar a simular_proceso, pero también guarda los tiempos acumulativos en una lista.
+lista_tiempos_minutos: Guarda los tiempos acumulativos en minutos.
+lista_tiempos_horas: Convierte los tiempos acumulativos de minutos a horas.
+Retorna el tiempo total en horas, la lista de tiempos acumulativos en horas y el número de iteraciones.
+
+-------------------------------------------------------------------------------------------------------
+
+
+
+Nota 
+no agrego los print y los plt pues eso tengo por entendi que ya sabemos que es simplemente muestro los datos y la informacion.
